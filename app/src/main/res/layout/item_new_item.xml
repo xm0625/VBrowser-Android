@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <RelativeLayout
+            android:layout_width="48dp"
+            android:layout_height="81dp"
+            android:id="@+id/downloadingItemDeleteButton">
+
+        <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:id="@+id/itemNewItemDownloadImageView"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/download_icon"/>
+
+        <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:id="@+id/itemNewItemDoneImageView"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/correct_icon"
+                android:visibility="invisible"/>
+
+        <RelativeLayout
+                android:layout_width="1dp"
+                android:layout_height="46dp"
+                android:id="@+id/relativeLayout5"
+                android:background="#eaeaea"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:id="@+id/relativeLayout4"
+            android:background="#eaeaea"
+            android:layout_below="@+id/downloadingItemDeleteButton"/>
+
+    <RelativeLayout
+            android:layout_width="48dp"
+            android:layout_height="65dp"
+            android:background="#12aef5"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="12dp"
+            android:id="@+id/relativeLayout2"
+            android:layout_toRightOf="@+id/downloadingItemDeleteButton">
+
+        <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true">
+
+            <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:id="@+id/imageView7"
+                    android:background="@mipmap/play_icon"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="M3U8"
+                    android:id="@+id/itemNewItemVideoType"
+                    android:textColor="#fff"
+                    android:textSize="10dp"
+                    android:layout_below="@+id/imageView7"
+                    android:layout_marginTop="4dp"
+                    android:textStyle="bold"
+                android:layout_centerHorizontal="true" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="蜘蛛侠3.m3u8"
+            android:id="@+id/itemNewItemTitle"
+            android:layout_alignTop="@+id/relativeLayout2"
+            android:layout_toRightOf="@+id/relativeLayout2"
+            android:layout_marginTop="9dp"
+            android:layout_marginLeft="13dp"
+            android:textColor="#3c3c3c"
+            android:textSize="12dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="12dp"
+            android:ellipsize="marquee"
+            android:singleLine="true"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1:23:02"
+            android:id="@+id/itemNewItemFileInfo"
+            android:layout_toRightOf="@+id/relativeLayout2"
+            android:layout_marginLeft="13dp"
+            android:textColor="#3c3c3c"
+            android:textSize="12dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="12dp"
+            android:ellipsize="marquee"
+            android:layout_marginBottom="9dp"
+            android:layout_alignBottom="@+id/relativeLayout2"
+            android:singleLine="true"/>
+
+</RelativeLayout>

@@ -1,0 +1,108 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="com.xm.vbrowser.app.activity.DownloadCenterActivity">
+
+    <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="41dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/relativeLayout10"
+            android:background="#f9f9f9">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="正在下载"
+                android:id="@+id/textView"
+                android:textColor="#3c3c3c"
+                android:layout_marginLeft="8dp"
+                android:layout_centerInParent="true"/>
+
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:id="@+id/relativeLayout7"
+                android:layout_alignParentBottom="true"
+                android:background="#eaeaea"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="39dp"
+            android:id="@+id/relativeLayout17"
+            android:layout_alignParentBottom="true"
+            android:visibility="visible">
+
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="38dp"
+                android:id="@+id/linearLayout"
+                android:layout_alignParentBottom="true"
+                android:background="#f9f9f9">
+
+            <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/goBackButton">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="返回"
+                        android:id="@+id/textView7"
+                        android:layout_centerInParent="true"
+                        android:textColor="#3c3c3c"
+                        android:textColorHighlight="#b8b8b8"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="1dp"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/relativeLayout14"
+                    android:layout_above="@+id/linearLayout"
+                    android:background="#eaeaea"/>
+
+            <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="3"
+                    android:id="@+id/goFileListButton">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="文件列表"
+                        android:id="@+id/textView8"
+                        android:layout_centerInParent="true"
+                        android:textColor="#3c3c3c"
+                        android:textColorHighlight="#b8b8b8"/>
+            </RelativeLayout>
+        </LinearLayout>
+
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:id="@+id/relativeLayout16"
+                android:layout_above="@+id/linearLayout"
+                android:background="#eaeaea"/>
+    </RelativeLayout>
+
+    <ListView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/listView"
+            android:layout_below="@+id/relativeLayout10"
+            android:layout_above="@+id/relativeLayout17"
+            android:background="#f9f9f9"
+            android:listSelector="#00000000"
+            android:fadingEdge="none"
+            android:fadingEdgeLength="0dp"
+            android:cacheColorHint="#00000000"/>
+
+</RelativeLayout>

@@ -1,0 +1,481 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" tools:context=".MainActivity">
+
+
+    <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="41dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:id="@+id/headHintArea"
+                android:background="#f9f9f9">
+
+            <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:id="@+id/headHintSearchIcon"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginLeft="11dp"
+                    android:layout_marginStart="17dp"
+                    android:src="@mipmap/search_1"/>
+
+            <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_toRightOf="@+id/headHintSearchIcon"
+                    android:layout_marginLeft="8dp"
+                    android:layout_toLeftOf="@+id/headHintQrButton"
+                    android:id="@+id/pageTitleButton"
+                    android:layout_alignParentTop="true">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="搜索或输入网址"
+                        android:id="@+id/pageTitleView"
+                        android:layout_centerVertical="true"
+                        android:textColor="#989898"
+                        android:singleLine="true"
+                        android:ellipsize="end"
+                        android:layout_alignParentLeft="true"
+                        android:textSize="12dp"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="48dp"
+                    android:layout_height="fill_parent"
+                    android:layout_alignParentRight="true"
+                    android:id="@+id/headHintQrButton">
+
+                <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:id="@+id/headHintQrIcon"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="13dp"
+                        android:layout_marginEnd="27dp"
+                        android:src="@mipmap/qr"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:id="@+id/headHintBottomDivider"
+                    android:layout_alignParentBottom="true"
+                    android:background="#eaeaea">
+            </RelativeLayout>
+
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="2dp"
+                android:layout_alignParentBottom="true">
+
+                <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="0"
+                        android:background="#349cf1"
+                    android:id="@+id/webViewProgressVIew" />
+
+                <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"/>
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="39dp"
+                android:layout_alignParentBottom="true"
+                android:id="@+id/pageBottomArea"
+                android:background="#f9f9f9">
+
+            <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:id="@+id/pageBottomTopDivider"
+                    android:layout_alignParentTop="true"
+                    android:background="#eaeaea">
+            </RelativeLayout>
+
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_below="@+id/pageBottomTopDivider">
+
+                <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:id="@+id/bottomGoBackButton"
+                        android:layout_weight="1"
+                        android:clickable="true">
+
+                    <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:id="@+id/bottomGoBackButtonImageView"
+                            android:src="@drawable/webview_go_back_button_select"
+                            android:layout_centerInParent="true"/>
+
+                    <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:id="@+id/imageView2"
+                            android:src="@mipmap/back_disabled"
+                            android:layout_centerInParent="true"
+                            android:visibility="invisible"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:id="@+id/bottomNewItemButton"
+                        android:layout_weight="1"
+                        android:clickable="true">
+
+                    <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:id="@+id/newItemImageView"
+                            android:src="@drawable/webview_new_item_button_select"
+                            android:layout_centerInParent="true"
+                            android:visibility="invisible"/>
+
+                    <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:id="@+id/imageView"
+                            android:src="@mipmap/item_disabled"
+                            android:layout_centerInParent="true"
+                            android:visibility="visible"/>
+
+                    <RelativeLayout
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:id="@+id/itemBadgeView"
+                        android:layout_alignTop="@+id/newItemImageView"
+                        android:layout_toRightOf="@+id/newItemImageView"
+                        android:layout_marginTop="-3dp"
+                        android:layout_marginLeft="-10dp"></RelativeLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:id="@+id/bottomDownloadButton"
+                        android:layout_weight="1"
+                        android:clickable="true">
+
+                    <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:id="@+id/imageView3"
+                            android:src="@drawable/webview_download_button_select"
+                            android:layout_centerInParent="true"/>
+
+                    <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:id="@+id/imageView6"
+                            android:src="@mipmap/download_disabled"
+                            android:layout_centerInParent="true"
+                            android:visibility="invisible"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:id="@+id/bottomRefreshButton"
+                        android:layout_weight="1"
+                        android:clickable="true">
+
+                    <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:id="@+id/imageView4"
+                            android:src="@drawable/webview_refresh_button_select"
+                            android:layout_centerInParent="true"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:id="@+id/bottomHomeButton"
+                        android:layout_weight="1"
+                        android:clickable="true">
+
+                    <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:id="@+id/imageView5"
+                            android:src="@drawable/webview_home_button_select"
+                            android:layout_centerInParent="true"/>
+                </RelativeLayout>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_below="@+id/headHintArea"
+                android:layout_above="@+id/pageBottomArea"
+                android:id="@+id/fragmentPlaceHolder">
+
+            <org.xwalk.core.XWalkView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/mainWebView"
+                    />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/newItemPage"
+            android:background="#55000000"
+            android:visibility="gone">
+
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/newItemPageMainView"
+                android:layout_alignParentBottom="true"
+                >
+
+            <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="39dp"
+                    android:id="@+id/newItemPageBottomArea"
+                    android:layout_alignParentBottom="true"
+                    android:visibility="visible"
+                    >
+
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="38dp"
+                        android:id="@+id/newItemBottomButtonArea"
+                        android:layout_alignParentBottom="true"
+                        android:background="#f9f9f9">
+
+                    <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1"
+                            android:id="@+id/newItemBottomCancelButton">
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="返回"
+                                android:id="@+id/textView2"
+                                android:layout_centerInParent="true"
+                                android:textColor="#3c3c3c"
+                                android:textColorHighlight="#b8b8b8" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                            android:layout_width="1dp"
+                            android:layout_height="fill_parent"
+                            android:id="@+id/newItemBottomButtonDivider"
+                            android:layout_above="@+id/newItemBottomButtonArea"
+                            android:background="#eaeaea"/>
+
+                    <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1"
+                            android:id="@+id/newItemBottomDownloadAllButton">
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="全部下载"
+                                android:id="@+id/textView3"
+                                android:layout_centerInParent="true"
+                                android:textColor="#3c3c3c"
+                                android:textColorHighlight="#b8b8b8" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="1dp"
+                        android:id="@+id/newItemBottomDivider"
+                        android:layout_above="@+id/newItemBottomButtonArea"
+                        android:background="#eaeaea">
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_above="@+id/newItemPageBottomArea">
+
+                <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1">
+                </RelativeLayout>
+
+                <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="2">
+
+                    <RelativeLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="41dp"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:id="@+id/relativeLayout3"
+                            android:background="#f9f9f9">
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="发现视频"
+                                android:id="@+id/textView4"
+                                android:textColor="#3c3c3c"
+                                android:layout_marginLeft="8dp"
+                                android:layout_centerInParent="true"/>
+
+                        <RelativeLayout
+                                android:layout_width="fill_parent"
+                                android:layout_height="1dp"
+                                android:id="@+id/relativeLayout"
+                                android:layout_alignParentBottom="true"
+                                android:background="#eaeaea"/>
+
+                    </RelativeLayout>
+
+                    <ListView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:id="@+id/newItemListView"
+                            android:layout_below="@+id/relativeLayout3"
+                            android:background="#f9f9f9"
+                            android:listSelector="#00000000"
+                            android:fadingEdge="none"
+                            android:fadingEdgeLength="0dp"
+                            android:cacheColorHint="#00000000"/>
+                </RelativeLayout>
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#ddffffff"
+            android:id="@+id/searchInputPage"
+            android:visibility="gone">
+
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="41dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:id="@+id/relativeLayout9"
+                android:background="#f9f9f9">
+
+            <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:id="@+id/imageView8"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginLeft="11dp"
+                    android:layout_marginStart="17dp"
+                    android:src="@mipmap/search_1"/>
+
+            <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_toRightOf="@+id/imageView8"
+                    android:layout_marginLeft="8dp"
+                    android:layout_toLeftOf="@+id/searchInputPageCancelButton"
+                    android:id="@+id/relativeLayout6"
+                    android:layout_alignParentTop="true">
+
+                <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:id="@+id/searchInput"
+                        android:textCursorDrawable="@null"
+                        android:background="#00ffffff"
+                        android:textSize="12dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentRight="true"
+                        android:hint="搜索或输入网址"
+                        android:textColorHint="#989898"
+                        android:layout_marginRight="10dp"
+                        android:textColor="#666666"
+                        android:imeOptions="actionGo"
+                        android:singleLine="true"
+                        android:selectAllOnFocus="true"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="48dp"
+                    android:layout_height="fill_parent"
+                    android:layout_alignParentRight="true"
+                    android:id="@+id/searchInputPageCancelButton"
+                    android:clickable="true">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="取消"
+                        android:id="@+id/textView5"
+                        android:layout_centerInParent="true"
+                        android:textSize="12dp"
+                        android:textColor="#989898"
+                        android:clickable="true"
+                        android:textColorHighlight="#b8b8b8"/>
+
+                <RelativeLayout
+                        android:layout_width="1dp"
+                        android:layout_height="21dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:background="#cbcbcb">
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:id="@+id/relativeLayout8"
+                    android:layout_alignParentBottom="true"
+                    android:background="#eaeaea"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
+</RelativeLayout>

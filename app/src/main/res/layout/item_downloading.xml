@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <RelativeLayout
+            android:layout_width="48dp"
+            android:layout_height="81dp"
+            android:id="@+id/downloadingItemDeleteButton">
+
+        <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:id="@+id/downloadingItemCancelImageView"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/cancel_default"/>
+
+            <RelativeLayout
+                android:layout_width="1dp"
+                android:layout_height="46dp"
+                android:id="@+id/relativeLayout5"
+                android:background="#eaeaea"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"/>
+    </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="48dp"
+            android:layout_height="65dp"
+            android:background="#12aef5"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="12dp"
+            android:id="@+id/relativeLayout2"
+            android:layout_toRightOf="@+id/downloadingItemDeleteButton">
+
+        <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true">
+
+            <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:id="@+id/imageView7"
+                    android:background="@mipmap/play_icon"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="M3U8"
+                    android:id="@+id/downloadingItemVideoType"
+                    android:textColor="#fff"
+                    android:textSize="10dp"
+                    android:layout_below="@+id/imageView7"
+                    android:layout_marginTop="4dp"
+                    android:textStyle="bold"
+                android:layout_centerHorizontal="true" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="蜘蛛侠3.m3u8"
+            android:id="@+id/downloadingItemTitle"
+            android:layout_alignTop="@+id/relativeLayout2"
+            android:layout_toRightOf="@+id/relativeLayout2"
+            android:layout_marginTop="9dp"
+            android:layout_marginLeft="13dp"
+            android:textColor="#3c3c3c"
+            android:textSize="12dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="12dp"
+            android:ellipsize="marquee"
+            android:singleLine="true"/>
+
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:layout_below="@+id/downloadingItemTitle"
+                android:layout_toRightOf="@+id/relativeLayout2"
+                android:layout_marginLeft="13dp"
+                android:layout_marginRight="12dp"
+                android:background="#eaeaea"
+                android:layout_marginTop="8dp"
+                android:id="@+id/downloadingItemProgress">
+
+                <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="0"
+                        android:background="#349cf1"
+                        android:id="@+id/downloadingItemProgressFinishedView"/>
+
+                <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"/>
+        </LinearLayout>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="104MB"
+            android:id="@+id/downloadingItemDownloadedSize"
+            android:layout_toRightOf="@+id/relativeLayout2"
+            android:layout_marginLeft="13dp"
+            android:textColor="#3c3c3c"
+            android:textSize="12dp"
+            android:ellipsize="marquee"
+            android:layout_marginBottom="9dp"
+            android:layout_alignBottom="@+id/relativeLayout2"
+            android:singleLine="true"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="/"
+            android:id="@+id/downloadingItemSizeDivider"
+            android:layout_toRightOf="@+id/downloadingItemDownloadedSize"
+            android:textColor="#3c3c3c"
+            android:textSize="12dp"
+            android:ellipsize="marquee"
+            android:layout_marginBottom="9dp"
+            android:layout_alignBottom="@+id/relativeLayout2"
+            android:singleLine="true"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="104MB"
+            android:id="@+id/downloadingItemTotalSize"
+            android:layout_toRightOf="@+id/downloadingItemSizeDivider"
+            android:textColor="#3c3c3c"
+            android:textSize="12dp"
+            android:ellipsize="marquee"
+            android:layout_marginBottom="9dp"
+            android:layout_alignBottom="@+id/relativeLayout2"
+            android:singleLine="true"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5MB/s"
+                android:id="@+id/downloadingItemDownloadInfo"
+                android:layout_marginLeft="13dp"
+                android:textColor="#3c3c3c"
+                android:textSize="12dp"
+                android:ellipsize="marquee"
+                android:layout_marginBottom="9dp"
+                android:layout_alignBottom="@+id/relativeLayout2"
+                android:singleLine="true"
+                android:layout_alignRight="@+id/downloadingItemProgress"/>
+
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:id="@+id/relativeLayout4"
+                android:background="#eaeaea"
+                android:layout_below="@+id/downloadingItemDeleteButton"/>
+
+</RelativeLayout>
