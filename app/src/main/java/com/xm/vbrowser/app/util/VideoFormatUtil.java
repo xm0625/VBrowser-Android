@@ -34,20 +34,6 @@ public class VideoFormatUtil {
             );
 
 
-    public static VideoFormat detectVideoFormat(String mime){
-        mime = mime.toLowerCase();
-        for(VideoFormat videoFormat:videoFormatList){
-            if(!TextUtils.isEmpty(mime)) {
-                for (String mimePattern : videoFormat.getMimeList()) {
-                    if (mime.contains(mimePattern)) {
-                        return videoFormat;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
     public static boolean containsVideoExtension(String url){
         for(String videoExtension:videoExtensionList){
             if(!TextUtils.isEmpty(url)) {
@@ -76,27 +62,28 @@ public class VideoFormatUtil {
         }
     }
 
-    public static boolean detectVideoUrl(String url){
+    public static VideoFormat detectVideoFormat(String url, String mime){
         try {
-            Map<String, List<String>> headerMap = HttpRequestUtil.performHeadRequest(url);
-            if (headerMap == null || !headerMap.containsKey("Content-Type")) {
-                //检测失败，未找到Content-Type
-                Log.d("VideoFormatUtil", "fail 未找到Content-Type:" + JSON.toJSONString(headerMap) + " taskUrl=" + url);
-                return false;
+            String path = new URL(url).getPath();
+            String extension = FileUtil.getExtension(path);
+            if("mp4".equals(extension)){
+                mime = "video/mp4";
             }
-            Log.d("VideoFormatUtil", "Content-Type:" + headerMap.get("Content-Type").toString() + " taskUrl=" + url);
-            VideoFormat videoFormat = VideoFormatUtil.detectVideoFormat(headerMap.get("Content-Type").toString());
-            if (videoFormat == null) {
-                //检测成功，不是视频
-                Log.d("VideoFormatUtil", "fail not video taskUrl=" + url);
-                return false;
-            }
-            Log.d("VideoFormatUtil", "found video taskUrl=" + url);
-            return true;
-        } catch (IOException e) {
+        } catch (MalformedURLException e) {
             e.printStackTrace();
-            Log.d("VideoFormatUtil", "fail IO错误 taskUrl=" + url);
-            return false;
+            return null;
         }
+
+        mime = mime.toLowerCase();
+        for(VideoFormat videoFormat:videoFormatList){
+            if(!TextUtils.isEmpty(mime)) {
+                for (String mimePattern : videoFormat.getMimeList()) {
+                    if (mime.contains(mimePattern)) {
+                        return videoFormat;
+                    }
+                }
+            }
+        }
+        return null;
     }
 }

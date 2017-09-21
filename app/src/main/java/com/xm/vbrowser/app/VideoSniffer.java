@@ -115,7 +115,7 @@ public class VideoSniffer {
                     return false;
                 }
                 Log.d("WorkerThread", "Content-Type:" + headerMap.get("Content-Type").toString() + " taskUrl=" + url);
-                VideoFormat videoFormat = VideoFormatUtil.detectVideoFormat(headerMap.get("Content-Type").toString());
+                VideoFormat videoFormat = VideoFormatUtil.detectVideoFormat(url, headerMap.get("Content-Type").toString());
                 if (videoFormat == null) {
                     //检测成功，不是视频
                     Log.d("WorkerThread", "fail not video taskUrl=" + url);
