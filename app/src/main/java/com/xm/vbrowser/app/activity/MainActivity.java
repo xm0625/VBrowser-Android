@@ -211,6 +211,7 @@ public class MainActivity extends Activity {
                     quickStart.put("avp", "http://www.avpapa.co/");
                     quickStart.put("ytb", "https://www.youtube.com/");
                     quickStart.put("5s", "http://dy.lol5s.com/");
+                    quickStart.put("sm", "http://wap.smdyy.cc/");
                     if(quickStart.containsKey(textView.getText().toString())){
                         loadOrSearch(quickStart.get(textView.getText().toString()));
                     }else{
@@ -270,11 +271,11 @@ public class MainActivity extends Activity {
         pageTitleView.setText(content);
         String encodedContent = "";
         try {
-            URLEncoder.encode(content, "utf-8");
+            encodedContent = URLEncoder.encode(content, "utf-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        mainWebView.loadUrl("https://www.baidu.com/s?wd="+encodedContent);
+        mainWebView.loadUrl("https://m.baidu.com/s?word="+encodedContent);
     }
 
     private void startRefreshGoBackButtonStateThread(){
@@ -484,6 +485,14 @@ public class MainActivity extends Activity {
         public void onLoadStarted(XWalkView view, String url) {
             super.onLoadStarted(view, url);
             Log.d("MainActivity", "onLoadStarted url:" + url);
+
+            WeakReference<LinkedBlockingQueue> detectedTaskUrlQueueWeakReference = new WeakReference<LinkedBlockingQueue>(detectedTaskUrlQueue);
+            Log.d("MainActivity", "shouldInterceptLoadRequest hint url:" + url);
+            LinkedBlockingQueue  detectedTaskUrlQueue = detectedTaskUrlQueueWeakReference.get();
+            if(detectedTaskUrlQueue != null){
+                detectedTaskUrlQueue.add(new DetectedVideoInfo(url,currentUrl,currentTitle));
+                Log.d("MainActivity", "shouldInterceptLoadRequest detectTaskUrlList.add(url):" + url);
+            }
         }
 
         @Override
@@ -503,24 +512,16 @@ public class MainActivity extends Activity {
             XWalkWebResourceResponse xWalkWebResourceResponse = super.shouldInterceptLoadRequest(view, request);
             String url = request.getUrl().toString();
             Log.d("MainActivity", "shouldInterceptLoadRequest url:" + url);
-            if(VideoFormatUtil.isLikeVideo(url)){
-                WeakReference<LinkedBlockingQueue> detectedTaskUrlQueueWeakReference = new WeakReference<LinkedBlockingQueue>(detectedTaskUrlQueue);
-                Log.d("MainActivity", "shouldInterceptLoadRequest hint url:" + url);
-                LinkedBlockingQueue  detectedTaskUrlQueue = detectedTaskUrlQueueWeakReference.get();
-                if(detectedTaskUrlQueue != null){
-                    detectedTaskUrlQueue.add(new DetectedVideoInfo(url,currentUrl,currentTitle));
-                    Log.d("MainActivity", "shouldInterceptLoadRequest detectTaskUrlList.add(url):" + url);
-                }
-                if(VideoFormatUtil.detectVideoUrl(url)){
-                    Log.d("MainActivity", "shouldInterceptLoadRequest detectVideoUrl url:" + url);
-                    try {
-                        xWalkWebResourceResponse = createXWalkWebResourceResponse("text/html","utf-8",new ByteArrayInputStream("".getBytes("UTF-8")),404,"blocked", new HashMap<String, String>());
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                        Log.d("MainActivity", "shouldInterceptLoadRequest UnsupportedEncodingException url:" + url);
-                    }
-                }
-            }
+//
+//            if(VideoFormatUtil.detectVideoUrl(url)){
+//                Log.d("MainActivity", "shouldInterceptLoadRequest detectVideoUrl url:" + url);
+//                try {
+//                    xWalkWebResourceResponse = createXWalkWebResourceResponse("text/html","utf-8",new ByteArrayInputStream("".getBytes("UTF-8")),404,"blocked", new HashMap<String, String>());
+//                } catch (UnsupportedEncodingException e) {
+//                    e.printStackTrace();
+//                    Log.d("MainActivity", "shouldInterceptLoadRequest UnsupportedEncodingException url:" + url);
+//                }
+//            }
             return xWalkWebResourceResponse;
         }
 
