@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSON;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -21,10 +22,12 @@ import java.util.Set;
 
 public class HttpRequestUtil {
 
+    private static final String TAG = "HttpRequestUtil";
+
     public static final String defaultCharset = "UTF-8";//"GBK"
     public static final int readTimeout = 10000;//10s
     public static final int connectTimeout = 10000;//10s
-    private static final String TAG = "HttpRequestUtil";
+    public static final int maxRedirects = 4;//最大重定向次数
 
     public static Map<String,String> commonHeaders;
 
@@ -34,6 +37,8 @@ public class HttpRequestUtil {
     }
 
     public static void main(String[] args) throws Exception {
+        Map<String, List<String>> stringListMap = performHeadRequest("https://disp.titan.mgtv.com/vod.do?fmt=4&pno=1121&fid=3BBD5FD649B8DEB99DBDE005F7304103&file=/c1/2017/08/30_0/3BBD5FD649B8DEB99DBDE005F7304103_20170830_1_1_644.mp4");
+        System.out.println(JSON.toJSONString(stringListMap));
     }
 
 
@@ -252,8 +257,13 @@ public class HttpRequestUtil {
     }
 
     public static Map<String, List<String>> performHeadRequest(String url, Map<String, String> headers) throws IOException {
+        return performHeadRequestForRedirects(url, headers, 0);
+    }
+
+    private static Map<String, List<String>> performHeadRequestForRedirects(String url, Map<String, String> headers, int redirectCount) throws IOException {
         URL url1 = new URL(url);
         HttpURLConnection conn = (HttpURLConnection) url1.openConnection();
+        conn.setInstanceFollowRedirects(false);
         conn.setRequestMethod("GET");
         conn.setConnectTimeout(connectTimeout);
         conn.setReadTimeout(readTimeout);
@@ -264,8 +274,18 @@ public class HttpRequestUtil {
             }
         }
         Map<String, List<String>> headerFields = conn.getHeaderFields();
+        int responseCode = conn.getResponseCode();
         conn.disconnect();
-        return headerFields;
+        if(responseCode == 302){
+            if(redirectCount>=maxRedirects){
+                return new HashMap<String, List<String>>();
+            }else {
+                String location = headerFields.get("Location").get(0);
+                return performHeadRequestForRedirects(location, headers, redirectCount+1);
+            }
+        }else{
+            return headerFields;
+        }
     }
 
 }
