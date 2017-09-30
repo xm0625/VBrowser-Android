@@ -276,7 +276,8 @@ public class DownloadManager {
 
                     private boolean detectSize(String url){
                         try {
-                            Map<String, List<String>> headerMap = HttpRequestUtil.performHeadRequest(url);
+                            HttpRequestUtil.HeadRequestResponse headRequestResponse = HttpRequestUtil.performHeadRequest(url);
+                            Map<String, List<String>> headerMap = headRequestResponse.getHeaderMap();
                             if (headerMap == null || !headerMap.containsKey("Content-Length") || headerMap.get("Content-Length").size()==0) {
                                 //检测失败，未找到Content-Type
                                 Log.d("DownloadManager", "fail 未找到Content-Length taskUrl=" + url);
@@ -763,7 +764,8 @@ public class DownloadManager {
         }
 
         private boolean detectFileSupportRange(String url) throws IOException {
-            Map<String, List<String>> headerMap = HttpRequestUtil.performHeadRequest(url);
+            HttpRequestUtil.HeadRequestResponse headRequestResponse = HttpRequestUtil.performHeadRequest(url);
+            Map<String, List<String>> headerMap = headRequestResponse.getHeaderMap();
             if (headerMap == null) {
                 //检测失败，未找到Content-Type
                 Log.d("DownloadManager", "fail 未找到Content-Length taskUrl=" + url);

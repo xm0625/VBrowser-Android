@@ -37,8 +37,9 @@ public class HttpRequestUtil {
     }
 
     public static void main(String[] args) throws Exception {
-        Map<String, List<String>> stringListMap = performHeadRequest("https://disp.titan.mgtv.com/vod.do?fmt=4&pno=1121&fid=3BBD5FD649B8DEB99DBDE005F7304103&file=/c1/2017/08/30_0/3BBD5FD649B8DEB99DBDE005F7304103_20170830_1_1_644.mp4");
-        System.out.println(JSON.toJSONString(stringListMap));
+        HeadRequestResponse headRequestResponse = performHeadRequest("https://disp.titan.mgtv.com/vod.do?fmt=4&pno=1121&fid=3BBD5FD649B8DEB99DBDE005F7304103&file=/c1/2017/08/30_0/3BBD5FD649B8DEB99DBDE005F7304103_20170830_1_1_644.mp4");
+        System.out.println(headRequestResponse.getRealUrl());
+        System.out.println(JSON.toJSONString(headRequestResponse.getHeaderMap()));
     }
 
 
@@ -252,15 +253,15 @@ public class HttpRequestUtil {
         fos.close();
     }
 
-    public static Map<String, List<String>> performHeadRequest(String url) throws IOException {
+    public static HeadRequestResponse performHeadRequest(String url) throws IOException {
         return performHeadRequest(url, commonHeaders);
     }
 
-    public static Map<String, List<String>> performHeadRequest(String url, Map<String, String> headers) throws IOException {
+    public static HeadRequestResponse performHeadRequest(String url, Map<String, String> headers) throws IOException {
         return performHeadRequestForRedirects(url, headers, 0);
     }
 
-    private static Map<String, List<String>> performHeadRequestForRedirects(String url, Map<String, String> headers, int redirectCount) throws IOException {
+    private static HeadRequestResponse performHeadRequestForRedirects(String url, Map<String, String> headers, int redirectCount) throws IOException {
         URL url1 = new URL(url);
         HttpURLConnection conn = (HttpURLConnection) url1.openConnection();
         conn.setInstanceFollowRedirects(false);
@@ -278,13 +279,42 @@ public class HttpRequestUtil {
         conn.disconnect();
         if(responseCode == 302){
             if(redirectCount>=maxRedirects){
-                return new HashMap<String, List<String>>();
+                return new HeadRequestResponse(url, new HashMap<String, List<String>>());
             }else {
                 String location = headerFields.get("Location").get(0);
                 return performHeadRequestForRedirects(location, headers, redirectCount+1);
             }
         }else{
-            return headerFields;
+            return new HeadRequestResponse(url, headerFields);
+        }
+    }
+
+    public static class HeadRequestResponse{
+        private String realUrl;
+        private Map<String, List<String>> headerMap;
+
+        public HeadRequestResponse() {
+        }
+
+        public HeadRequestResponse(String realUrl, Map<String, List<String>> headerMap) {
+            this.realUrl = realUrl;
+            this.headerMap = headerMap;
+        }
+
+        public String getRealUrl() {
+            return realUrl;
+        }
+
+        public void setRealUrl(String realUrl) {
+            this.realUrl = realUrl;
+        }
+
+        public Map<String, List<String>> getHeaderMap() {
+            return headerMap;
+        }
+
+        public void setHeaderMap(Map<String, List<String>> headerMap) {
+            this.headerMap = headerMap;
         }
     }
 

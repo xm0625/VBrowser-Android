@@ -108,7 +108,10 @@ public class VideoSniffer {
             String sourcePageUrl = detectedVideoInfo.getSourcePageUrl();
             String sourcePageTitle = detectedVideoInfo.getSourcePageTitle();
             try {
-                Map<String, List<String>> headerMap = HttpRequestUtil.performHeadRequest(url);
+                HttpRequestUtil.HeadRequestResponse headRequestResponse = HttpRequestUtil.performHeadRequest(url);
+                url = headRequestResponse.getRealUrl();
+                detectedVideoInfo.setUrl(url);
+                Map<String, List<String>> headerMap = headRequestResponse.getHeaderMap();
                 if (headerMap == null || !headerMap.containsKey("Content-Type")) {
                     //检测失败，未找到Content-Type
                     Log.d("WorkerThread", "fail 未找到Content-Type:" + JSON.toJSONString(headerMap) + " taskUrl=" + url);
