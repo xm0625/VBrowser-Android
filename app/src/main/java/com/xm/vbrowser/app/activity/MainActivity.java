@@ -548,7 +548,7 @@ public class MainActivity extends Activity {
 
         @Override
         public void onReceivedSslError(XWalkView view, ValueCallback<Boolean> callback, SslError error) {
-            Log.d("MainActivity", "onReceivedSslError");
+            callback.onReceiveValue(true);
         }
     }
 
