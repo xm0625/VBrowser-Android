@@ -30,7 +30,7 @@ android {
         // Specifies the ABI configurations of your native
         // libraries Gradle should build and package with your APK.//"armeabi", "armeabi-v7a", "x86", "mips"
         ndk {
-            abiFilters "x86"
+            abiFilters "x86", "armeabi-v7a"
         }
     }
 
