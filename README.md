@@ -36,10 +36,6 @@
   4.长按嗅探列表可以清除角标和已嗅探出的视频列表;  
   5.目前的嗅探策略为激进型，不会放过任何可疑Url，~~因此也会稍微影响页面的加载速度~~(已优化)
 
-请我...喝杯咖啡?
----
-![donationImg](https://raw.githubusercontent.com/xm0625/tool.github.io/master/Donation.png)
-
 讨论
 ---
   [V2EX][3]
@@ -47,6 +43,10 @@
 License
 ---
   GPLv2.
+
+请我...喝杯咖啡?
+---
+![donationImg](https://raw.githubusercontent.com/xm0625/tool.github.io/master/Donation.png)
 
   [1]: https://crosswalk-project.org/
   [2]: https://github.com/xm0625/VBrowser-Android/releases
