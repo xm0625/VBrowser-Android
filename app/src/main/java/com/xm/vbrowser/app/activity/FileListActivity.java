@@ -88,34 +88,36 @@ public class FileListActivity extends Activity {
 
                         List<LocalVideoInfo>  localVideoList = new ArrayList<LocalVideoInfo>();
                         String[] strings = new File(MainApplication.appConfig.rootPath).list();
-                        for(String itemName:strings){
-                            if(itemName.endsWith(".temp")){
-                                continue;
-                            }
-
-                            String currentItemPath = MainApplication.appConfig.rootPath+File.separator+itemName;
-                            File currentItem = new File(currentItemPath);
-                            if(currentItem.isFile()){
-                                String extension = FileUtil.getExtension(itemName);
-                                if(VideoFormatUtil.containsVideoExtension(extension)){
-                                    LocalVideoInfo localVideoInfo = new LocalVideoInfo();
-                                    localVideoInfo.setFileName(FileUtil.getName(itemName));
-                                    localVideoInfo.setVideoType(extension);
-                                    localVideoInfo.setSize(currentItem.length());
-                                    localVideoInfo.setLocalPath(currentItemPath);
-                                    localVideoList.add(localVideoInfo);
+                        if(strings!=null) {
+                            for (String itemName : strings) {
+                                if (itemName.endsWith(".temp")) {
+                                    continue;
                                 }
-                            }
-                            if(currentItem.isDirectory()){
-                                List<String> fileNameList = Arrays.asList(new File(currentItemPath).list());
-                                if(fileNameList.contains("index.m3u8") && fileNameList.contains("videoTitle")){
-                                    long size = FileUtil.getFolderSize(currentItem);
-                                    LocalVideoInfo localVideoInfo = new LocalVideoInfo();
-                                    localVideoInfo.setFileName(FileUtil.fileToString(currentItemPath+File.separator+"videoTitle"));
-                                    localVideoInfo.setVideoType("m3u8");
-                                    localVideoInfo.setSize(size);
-                                    localVideoInfo.setLocalPath(currentItemPath);
-                                    localVideoList.add(localVideoInfo);
+
+                                String currentItemPath = MainApplication.appConfig.rootPath + File.separator + itemName;
+                                File currentItem = new File(currentItemPath);
+                                if (currentItem.isFile()) {
+                                    String extension = FileUtil.getExtension(itemName);
+                                    if (VideoFormatUtil.containsVideoExtension(extension)) {
+                                        LocalVideoInfo localVideoInfo = new LocalVideoInfo();
+                                        localVideoInfo.setFileName(FileUtil.getName(itemName));
+                                        localVideoInfo.setVideoType(extension);
+                                        localVideoInfo.setSize(currentItem.length());
+                                        localVideoInfo.setLocalPath(currentItemPath);
+                                        localVideoList.add(localVideoInfo);
+                                    }
+                                }
+                                if (currentItem.isDirectory()) {
+                                    List<String> fileNameList = Arrays.asList(new File(currentItemPath).list());
+                                    if (fileNameList.contains("index.m3u8") && fileNameList.contains("videoTitle")) {
+                                        long size = FileUtil.getFolderSize(currentItem);
+                                        LocalVideoInfo localVideoInfo = new LocalVideoInfo();
+                                        localVideoInfo.setFileName(FileUtil.fileToString(currentItemPath + File.separator + "videoTitle"));
+                                        localVideoInfo.setVideoType("m3u8");
+                                        localVideoInfo.setSize(size);
+                                        localVideoInfo.setLocalPath(currentItemPath);
+                                        localVideoList.add(localVideoInfo);
+                                    }
                                 }
                             }
                         }
