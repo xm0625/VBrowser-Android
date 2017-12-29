@@ -41,13 +41,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/armv7Debug/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/armv7Debug/rs" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/armv7Debug/shaders" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testArmv7Debug/res" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testArmv7Debug/resources" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testArmv7Debug/assets" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testArmv7Debug/aidl" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testArmv7Debug/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testArmv7Debug/rs" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testArmv7Debug/shaders" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/source/r/androidTest/armv7/debug" isTestSource="true" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/source/aidl/androidTest/armv7/debug" isTestSource="true" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/source/buildConfig/androidTest/armv7/debug" isTestSource="true" generated="true" />
@@ -55,6 +48,13 @@
       <sourceFolder url="file://$MODULE_DIR$/build/generated/source/apt/androidTest/armv7/debug" isTestSource="true" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/res/rs/androidTest/armv7/debug" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/res/resValues/androidTest/armv7/debug" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testArmv7Debug/res" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testArmv7Debug/resources" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testArmv7Debug/assets" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testArmv7Debug/aidl" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testArmv7Debug/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testArmv7Debug/rs" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testArmv7Debug/shaders" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/armv7/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/armv7/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/armv7/assets" type="java-resource" />

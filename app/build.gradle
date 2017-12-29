@@ -52,8 +52,8 @@ android {
         applicationId "com.xm.vbrowser.app"
         minSdkVersion Integer.parseInt(project.ANDROID_BUILD_MIN_SDK_VERSION)
         targetSdkVersion Integer.parseInt(project.ANDROID_BUILD_TARGET_SDK_VERSION)
-        versionCode 3
-        versionName "1.2"
+        versionCode 4
+        versionName "1.3"
 
 
         // Specifies the ABI configurations of your native
