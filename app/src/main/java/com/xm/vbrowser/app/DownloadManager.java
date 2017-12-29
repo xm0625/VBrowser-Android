@@ -19,6 +19,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.ByteBuffer;
@@ -355,8 +356,7 @@ public class DownloadManager {
                     }
                     private boolean downloadFile(String url, String downloadPath){
                         try {
-                            URLConnection urlConnection = HttpRequestUtil.sendGetRequest(url);
-                            save2File(urlConnection, downloadPath);
+                            save2File(HttpRequestUtil.sendGetRequest(url), downloadPath);
                             return true;
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -366,23 +366,33 @@ public class DownloadManager {
                     }
 
                     private void save2File(URLConnection urlConnection,String saveFilePath) throws IOException {
-                        DataInputStream dis = new DataInputStream(urlConnection.getInputStream());
-                        //建立一个新的文件
-                        FileOutputStream fos = new FileOutputStream(new File(saveFilePath));
-                        byte[] buffer = new byte[1024];
-                        int length;
-                        //开始填充数据
-                        while( (length = dis.read(buffer))>0){
-                            if(Thread.currentThread().isInterrupted()){
-                                Log.d("DownloadManager", "thread (" + downloadTask.getTaskId() +") save2File :return early");
-                                return;
+                        DataInputStream dis = null;
+                        FileOutputStream fos = null;
+
+                        try {
+                            dis = new DataInputStream(urlConnection.getInputStream());
+                            //建立一个新的文件
+                            fos = new FileOutputStream(new File(saveFilePath));
+                            byte[] buffer = new byte[1024];
+                            int length;
+                            //开始填充数据
+                            while ((length = dis.read(buffer)) > 0) {
+                                if (Thread.currentThread().isInterrupted()) {
+                                    Log.d("DownloadManager", "thread (" + downloadTask.getTaskId() + ") save2File :return early");
+                                    return;
+                                }
+                                downloadTask.getLastDurationDownloadSize().addAndGet(length);
+                                downloadTask.getTotalDownloaded().addAndGet(length);
+                                fos.write(buffer, 0, length);
                             }
-                            downloadTask.getLastDurationDownloadSize().addAndGet(length);
-                            downloadTask.getTotalDownloaded().addAndGet(length);
-                            fos.write(buffer,0,length);
+                        }finally {
+                            if(dis != null){
+                                dis.close();
+                            }
+                            if(fos != null){
+                                fos.close();
+                            }
                         }
-                        dis.close();
-                        fos.close();
                     }
                 });
 
@@ -557,8 +567,7 @@ public class DownloadManager {
             speedCheckerThread.start();
             if(!isFileSupportRange){
                 try {
-                    URLConnection urlConnection = HttpRequestUtil.sendGetRequest(downloadTask.getUrl());
-                    save2File(urlConnection, downloadTempFilePath);
+                    save2File(HttpRequestUtil.sendGetRequest(downloadTask.getUrl()), downloadTempFilePath);
                 } catch (IOException e) {
                     e.printStackTrace();
                     downloadTask.setStatus("error");
@@ -622,8 +631,7 @@ public class DownloadManager {
                             try {
                                 HashMap<String, String> hashMap = new HashMap<String, String>();
                                 hashMap.put("Range", rangeHeader);
-                                URLConnection urlConnection = HttpRequestUtil.sendGetRequest(url,null,hashMap);
-                                save2File(urlConnection, downloadPath);
+                                save2File(HttpRequestUtil.sendGetRequest(url,null,hashMap), downloadPath);
                                 return true;
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -633,23 +641,34 @@ public class DownloadManager {
                         }
 
                         private void save2File(URLConnection urlConnection,String saveFilePath) throws IOException {
-                            DataInputStream dis = new DataInputStream(urlConnection.getInputStream());
-                            //建立一个新的文件
-                            FileOutputStream fos = new FileOutputStream(new File(saveFilePath));
-                            byte[] buffer = new byte[1024];
-                            int length;
-                            //开始填充数据
-                            while( (length = dis.read(buffer))>0){
-                                if(Thread.currentThread().isInterrupted()){
-                                    Log.d("DownloadManager", "thread (" + downloadTask.getTaskId() +") save2File :return early");
-                                    return;
+                            DataInputStream dis = null;
+                            FileOutputStream fos = null;
+
+                            try {
+                                dis = new DataInputStream(urlConnection.getInputStream());
+                                //建立一个新的文件
+                                fos = new FileOutputStream(new File(saveFilePath));
+                                byte[] buffer = new byte[1024];
+                                int length;
+                                //开始填充数据
+                                while ((length = dis.read(buffer)) > 0) {
+                                    if (Thread.currentThread().isInterrupted()) {
+                                        Log.d("DownloadManager", "thread (" + downloadTask.getTaskId() + ") save2File :return early");
+                                        return;
+                                    }
+                                    downloadTask.getLastDurationDownloadSize().addAndGet(length);
+                                    downloadTask.getTotalDownloaded().addAndGet(length);
+                                    fos.write(buffer, 0, length);
                                 }
-                                downloadTask.getLastDurationDownloadSize().addAndGet(length);
-                                downloadTask.getTotalDownloaded().addAndGet(length);
-                                fos.write(buffer,0,length);
+                            }finally {
+                                if(dis != null) {
+                                    dis.close();
+                                }
+                                if(fos != null) {
+                                    fos.close();
+                                }
+                                ((HttpURLConnection) urlConnection).disconnect();
                             }
-                            dis.close();
-                            fos.close();
                         }
                     });
 
@@ -674,15 +693,16 @@ public class DownloadManager {
                 }
                 downloadTask.setStatus("saving");
                 try {
-                    File outputFile = downloadTempFile;
-                    File fromFile;
                     FileOutputStream outputFileStream = null;
                     FileInputStream fromFileStream = null;
-                    outputFileStream = new FileOutputStream(outputFile);
-                    FileChannel fcout = outputFileStream.getChannel();
+                    FileChannel fcout = null;
                     FileChannel fcin = null;
-                    ByteBuffer buffer = ByteBuffer.allocate(1024);
                     try {
+                        File outputFile = downloadTempFile;
+                        File fromFile;
+                        ByteBuffer buffer = ByteBuffer.allocate(1024);
+                        outputFileStream = new FileOutputStream(outputFile);
+                        fcout = outputFileStream.getChannel();
                         for (int i = 0; i < n; i++) {
                             fromFile = new File(downloadTempDir + File.separator + downloadTask.getFileName() + "." + String.valueOf(i));
                             fromFileStream = new FileInputStream(fromFile);
@@ -708,24 +728,18 @@ public class DownloadManager {
                                     fcout.write(buffer);
                                 }
                             } finally {
-                                try {
+                                if(fcin != null) {
                                     fcin.close();
-                                } catch (Exception e) {
                                 }
-                                try {
-                                    fromFileStream.close();
-                                } catch (Exception e) {
-                                }
+                                fromFileStream.close();
                             }
                         }
                     } finally {
-                        try {
+                        if(fcout != null){
                             fcout.close();
-                        } catch (Exception e) {
                         }
-                        try {
+                        if(outputFileStream != null){
                             outputFileStream.close();
-                        } catch (Exception e) {
                         }
                     }
                 }catch (Exception e){
@@ -748,19 +762,30 @@ public class DownloadManager {
 
 
         private void save2File(URLConnection urlConnection,String saveFilePath) throws IOException {
-            DataInputStream dis = new DataInputStream(urlConnection.getInputStream());
-            //建立一个新的文件
-            FileOutputStream fos = new FileOutputStream(new File(saveFilePath));
-            byte[] buffer = new byte[1024];
-            int length;
-            //开始填充数据
-            while(!Thread.currentThread().isInterrupted() &&  ((length = dis.read(buffer))>0)){
-                downloadTask.getLastDurationDownloadSize().addAndGet(length);
-                downloadTask.getTotalDownloaded().addAndGet(length);
-                fos.write(buffer,0,length);
+
+            DataInputStream dis = null;
+            FileOutputStream fos = null;
+
+            try {
+                dis = new DataInputStream(urlConnection.getInputStream());
+                //建立一个新的文件
+                fos = new FileOutputStream(new File(saveFilePath));
+                byte[] buffer = new byte[1024];
+                int length;
+                //开始填充数据
+                while (!Thread.currentThread().isInterrupted() && ((length = dis.read(buffer)) > 0)) {
+                    downloadTask.getLastDurationDownloadSize().addAndGet(length);
+                    downloadTask.getTotalDownloaded().addAndGet(length);
+                    fos.write(buffer, 0, length);
+                }
+            }finally {
+                if(dis != null){
+                    dis.close();
+                }
+                if(fos != null){
+                    fos.close();
+                }
             }
-            dis.close();
-            fos.close();
         }
 
         private boolean detectFileSupportRange(String url) throws IOException {
