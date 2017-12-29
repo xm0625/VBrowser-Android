@@ -189,6 +189,9 @@ public class DownloadCenterActivity extends Activity {
             }
 
             DownloadTask downloadTask = MainApplication.downloadManager.getAllDownloadTaskMap().get(allDownloadTaskKeyArray[position]);
+            if(downloadTask==null){
+                return convertView;
+            }
             holder.downloadingItemTitle.setText(TextUtils.isEmpty(downloadTask.getSourcePageTitle())?downloadTask.getFileName()+"."+downloadTask.getFileExtension():downloadTask.getSourcePageTitle()+"."+downloadTask.getFileExtension());
             holder.downloadingItemVideoType.setText(downloadTask.getFileExtension());
             if("running".equals(downloadTask.getStatus())){

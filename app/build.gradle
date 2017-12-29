@@ -13,11 +13,37 @@ repositories {
     maven {
         url 'https://download.01.org/crosswalk/releases/crosswalk/android/maven2'
     }
+    maven {
+        url 'https://maven.google.com'
+    }
 }
 
 android {
     compileSdkVersion Integer.parseInt(project.ANDROID_BUILD_SDK_VERSION)
     buildToolsVersion project.ANDROID_BUILD_TOOLS_VERSION
+
+    productFlavors {
+        armv7 {
+            ndk {
+                abiFilter "armeabi-v7a"
+            }
+        }
+        arm64 {
+            ndk {
+                abiFilter "arm64-v8a"
+            }
+        }
+        x86 {
+            ndk {
+                abiFilter "x86"
+            }
+        }
+        x86_64 {
+            ndk {
+                abiFilter "x86_64"
+            }
+        }
+    }
 
     defaultConfig {
         applicationId "com.xm.vbrowser.app"
@@ -28,10 +54,10 @@ android {
 
 
         // Specifies the ABI configurations of your native
-        // libraries Gradle should build and package with your APK.//"armeabi", "armeabi-v7a", "x86", "mips"
-        ndk {
-            abiFilters "x86", "armeabi-v7a"
-        }
+        // libraries Gradle should build and package with your APK.//"armeabi-v7a", "x86", "arm64-v8a", "x86_64"
+//        ndk {
+//            abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
+//        }
     }
 
     compileOptions {
@@ -54,4 +80,5 @@ dependencies {
     compile 'com.daimajia.easing:library:2.0@aar'
     compile 'com.daimajia.androidanimations:library:2.3@aar'
     compile 'org.xwalk:xwalk_core_library:23.53.589.4'
+    compile 'pub.devrel:easypermissions:1.1.1'
 }

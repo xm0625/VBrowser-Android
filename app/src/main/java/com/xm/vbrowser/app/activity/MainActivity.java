@@ -1,5 +1,6 @@
 package com.xm.vbrowser.app.activity;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -7,17 +8,22 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.*;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.webkit.*;
 
+import android.webkit.MimeTypeMap;
+import android.webkit.ValueCallback;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -55,11 +61,17 @@ import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.xwalk.core.*;
+
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
+import pub.devrel.easypermissions.PermissionRequest;
 import q.rorbin.badgeview.Badge;
 import q.rorbin.badgeview.QBadgeView;
 
-public class MainActivity extends Activity {
-    private static final String HOME_URL = "http://go.uc.cn/page/subpage/shipin?uc_param_str=dnfrpfbivecpbtntla";
+public class MainActivity extends Activity implements EasyPermissions.PermissionCallbacks{
+//    private static final String HOME_URL = "http://go.uc.cn/page/subpage/shipin?uc_param_str=dnfrpfbivecpbtntla";
+    private static final String HOME_URL = "http://m.babayu.com/Domestic/liechangdianshiju/player-3-57.html";
     private static final String IPHONE_UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1";
 
     private XWalkView mainWebView;
@@ -93,16 +105,106 @@ public class MainActivity extends Activity {
 
     private boolean pageAnimationLock = false;
 
+    /**
+     * 为权限赋予一个唯一的标示码
+     */
+    public static final int WRITE_EXTERNAL_STORAGE = 1001;
+
+    private boolean initReady = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         initView();
-        mainInit();
+    }
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @AfterPermissionGranted(WRITE_EXTERNAL_STORAGE)
+    private void requireAllPermissionForInit() {
+        //可以只获取写或者读权限，同一个权限Group下只要有一个权限申请通过了就都可以用了
+        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            // Already have permission, do the thing
+            if(!initReady){
+                mainInit();
+                initReady = true;
+            }
+            if(videoSniffer != null) {
+                videoSniffer.startSniffer();
+            }
+            if (mainWebView != null) {
+                mainWebView.resumeTimers();
+                mainWebView.onShow();
+            }
+            startRefreshGoBackButtonStateThread();
+        } else {
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(this, "下载需要读写外部存储权限",
+                    WRITE_EXTERNAL_STORAGE, perms);
+        }
+    }
+
+
+
+    @Override
+    public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
+        //如果不使用AfterPermissionGranted注解，就在这里调用
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            ViewUtil.openConfirmDialog(this,
+                    "必需权限",
+                    "没有该权限，此应用程序可能无法正常工作。打开应用设置屏幕以修改应用权限",
+                    "去设置", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            startActivity(
+                                    new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                            .setData(Uri.fromParts("package", getPackageName(), null)));
+                        }
+                    },
+                    "退出",  new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    }
+            );
+            return;
+        }
+        ViewUtil.openConfirmDialog(this,
+                "必需权限",
+                "没有该权限，此应用程序可能无法正常工作。",
+                "再试一次", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        requireAllPermissionForInit();
+                    }
+                },
+                "退出",  new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                }
+        );
     }
 
     private void initView() {
+
         mainWebView = (XWalkView)findViewById(R.id.mainWebView);
         itemBadgeView = findViewById(R.id.itemBadgeView);
         bottomGoBackButton = findViewById(R.id.bottomGoBackButton);
@@ -312,12 +414,7 @@ public class MainActivity extends Activity {
     protected void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
-        videoSniffer.startSniffer();
-        if (mainWebView != null) {
-            mainWebView.resumeTimers();
-            mainWebView.onShow();
-        }
-        startRefreshGoBackButtonStateThread();
+        requireAllPermissionForInit();
     }
 
     @Override
@@ -327,7 +424,9 @@ public class MainActivity extends Activity {
             mainWebView.pauseTimers();
             mainWebView.onHide();
         }
-        videoSniffer.stopSniffer();
+        if(videoSniffer!=null) {
+            videoSniffer.stopSniffer();
+        }
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
