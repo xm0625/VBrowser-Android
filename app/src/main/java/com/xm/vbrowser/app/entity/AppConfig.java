@@ -33,7 +33,8 @@ public class AppConfig {
     private void loadConfig(){
         rootPath = PreferencesUtils.getString(MainApplication.mainApplication, "rootPath", Environment.getExternalStorageDirectory()+File.separator+ROOT_DIR);
         videoSnifferThreadNum = PreferencesUtils.getInt(MainApplication.mainApplication, "videoSnifferThreadNum", 5);
-        videoSnifferRetryCountOnFail = PreferencesUtils.getInt(MainApplication.mainApplication, "videoSnifferRetryCountOnFail", 5);
+        videoSnifferRetryCountOnFail = PreferencesUtils.getInt(MainApplication.mainApplication, "videoSnifferRetryCountOnFail", 1);
+        videoSnifferRetryCountOnFail = 1;
         maxConcurrentTask = PreferencesUtils.getInt(MainApplication.mainApplication, "maxConcurrentTask", 2);
         m3U8DownloadThreadNum = PreferencesUtils.getInt(MainApplication.mainApplication, "m3U8DownloadThreadNum", 20);
         m3U8DownloadSizeDetectRetryCountOnFail = PreferencesUtils.getInt(MainApplication.mainApplication, "m3U8DownloadSizeDetectRetryCountOnFail", 20);
@@ -41,6 +42,7 @@ public class AppConfig {
         normalFileHeaderCheckRetryCountOnFail = PreferencesUtils.getInt(MainApplication.mainApplication, "normalFileHeaderCheckRetryCountOnFail", 20);
         normalFileSplitSize = PreferencesUtils.getLong(MainApplication.mainApplication, "normalFileSplitSize", 2000000);
         normalFileDownloadThreadNum = PreferencesUtils.getInt(MainApplication.mainApplication, "normalFileDownloadThreadNum", 5);
+
         saveConfig();
     }
 
