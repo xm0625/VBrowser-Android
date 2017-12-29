@@ -14,20 +14,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
 public class HttpRequestUtil {
 
@@ -40,48 +31,9 @@ public class HttpRequestUtil {
 
     public static Map<String,String> commonHeaders;
 
-    public final static HostnameVerifier DO_NOT_VERIFY = new HostnameVerifier() {
-        public boolean verify(String hostname, SSLSession session) {
-            return true;
-        }
-    };
-
     static{
         commonHeaders = new HashMap<String, String>();
         commonHeaders.put("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1");
-
-        trustAllHosts();
-    }
-
-    private static void trustAllHosts() {
-        // Create a trust manager that does not validate certificate chains
-        // Android use X509 cert
-        TrustManager[] trustAllCerts = new TrustManager[] {
-                new X509TrustManager() {
-
-                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                        return new java.security.cert.X509Certificate[] {};
-                    }
-
-                    public void checkClientTrusted(X509Certificate[] chain,
-                                                   String authType) throws CertificateException {
-                    }
-
-                    public void checkServerTrusted(X509Certificate[] chain,
-                                                   String authType) throws CertificateException {
-                    }
-                }
-        };
-
-        // Install the all-trusting trust manager
-        try {
-            SSLContext sc = SSLContext.getInstance("TLS");
-            sc.init(null, trustAllCerts, new java.security.SecureRandom());
-            HttpsURLConnection
-                    .setDefaultSSLSocketFactory(sc.getSocketFactory());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public static void main(String[] args) throws Exception {
@@ -117,15 +69,8 @@ public class HttpRequestUtil {
         }
         System.out.println("before:"+url);
         System.out.println("after:"+buf.toString());
-        urlObject = new URL(buf.toString());
-        HttpURLConnection conn;
-        if (urlObject.getProtocol().toUpperCase().equals("HTTPS")) {
-            HttpsURLConnection https = (HttpsURLConnection) urlObject.openConnection();
-            https.setHostnameVerifier(DO_NOT_VERIFY);
-            conn = https;
-        } else {
-            conn = (HttpURLConnection) urlObject.openConnection();
-        }
+        URL url1 = new URL(buf.toString());
+        HttpURLConnection conn = (HttpURLConnection) url1.openConnection();
         conn.setRequestMethod("GET");
         conn.setConnectTimeout(connectTimeout);
         conn.setReadTimeout(readTimeout);
@@ -139,6 +84,7 @@ public class HttpRequestUtil {
         return conn;
     }
 
+
     public static URLConnection sendGetRequest(String url) throws IOException {
         return sendGetRequest(url, null,commonHeaders);
     }
@@ -147,6 +93,7 @@ public class HttpRequestUtil {
                                                Map<String, String> params) throws IOException {
         return sendGetRequest(url,params,commonHeaders);
     }
+
 
     public static URLConnection sendPostRequest(String url,Map<String, String> params, Map<String, String> headers) throws IOException {
         StringBuilder buf = new StringBuilder();
@@ -159,15 +106,8 @@ public class HttpRequestUtil {
                     .append(URLEncoder.encode(entry.getValue(), defaultCharset));
         }
         buf.deleteCharAt(0);
-        URL urlObject = new URL(url);
-        HttpURLConnection conn;
-        if (urlObject.getProtocol().toUpperCase().equals("HTTPS")) {
-            HttpsURLConnection https = (HttpsURLConnection) urlObject.openConnection();
-            https.setHostnameVerifier(DO_NOT_VERIFY);
-            conn = https;
-        } else {
-            conn = (HttpURLConnection) urlObject.openConnection();
-        }
+        URL url1 = new URL(url);
+        HttpURLConnection conn = (HttpURLConnection) url1.openConnection();
         conn.setRequestMethod("POST");
         conn.setConnectTimeout(connectTimeout);
         conn.setReadTimeout(readTimeout);
@@ -186,6 +126,8 @@ public class HttpRequestUtil {
         return conn;
     }
 
+
+
     public static URLConnection sendPostRequest(String url,
                                                 Map<String, String> params) throws IOException {
         try {
@@ -201,15 +143,8 @@ public class HttpRequestUtil {
             postDataString = "";
         }
         Set<Entry<String, String>> entrys;
-        URL urlObject = new URL(url);
-        HttpURLConnection conn;
-        if (urlObject.getProtocol().toUpperCase().equals("HTTPS")) {
-            HttpsURLConnection https = (HttpsURLConnection) urlObject.openConnection();
-            https.setHostnameVerifier(DO_NOT_VERIFY);
-            conn = https;
-        } else {
-            conn = (HttpURLConnection) urlObject.openConnection();
-        }
+        URL url1 = new URL(url);
+        HttpURLConnection conn = (HttpURLConnection) url1.openConnection();
         conn.setRequestMethod("POST");
         conn.setConnectTimeout(connectTimeout);
         conn.setReadTimeout(readTimeout);
@@ -228,6 +163,7 @@ public class HttpRequestUtil {
         return conn;
     }
 
+
     public static URLConnection sendStringPostRequest(String url,String postDataString) throws IOException {
         try {
             return sendStringPostRequest(url, postDataString, commonHeaders);
@@ -236,6 +172,7 @@ public class HttpRequestUtil {
         }
         return null;
     }
+
 
     public static String getResponseString(URLConnection urlConnection) throws IOException {
 
@@ -302,15 +239,8 @@ public class HttpRequestUtil {
     }
 
     private static HeadRequestResponse performHeadRequestForRedirects(String url, Map<String, String> headers, int redirectCount) throws IOException {
-        URL urlObject = new URL(url);
-        HttpURLConnection conn;
-        if (urlObject.getProtocol().toUpperCase().equals("HTTPS")) {
-            HttpsURLConnection https = (HttpsURLConnection) urlObject.openConnection();
-            https.setHostnameVerifier(DO_NOT_VERIFY);
-            conn = https;
-        } else {
-            conn = (HttpURLConnection) urlObject.openConnection();
-        }
+        URL url1 = new URL(url);
+        HttpURLConnection conn = (HttpURLConnection) url1.openConnection();
         conn.setInstanceFollowRedirects(false);
         conn.setRequestMethod("GET");
         conn.setConnectTimeout(connectTimeout);
