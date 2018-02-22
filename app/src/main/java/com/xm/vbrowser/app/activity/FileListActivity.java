@@ -2,30 +2,36 @@ package com.xm.vbrowser.app.activity;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
-import android.view.*;
-import android.widget.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+
 import com.alibaba.fastjson.JSON;
 import com.xm.vbrowser.app.MainApplication;
 import com.xm.vbrowser.app.R;
-import com.xm.vbrowser.app.entity.DownloadTask;
 import com.xm.vbrowser.app.entity.LocalVideoInfo;
-import com.xm.vbrowser.app.event.RefreshDownloadingListEvent;
 import com.xm.vbrowser.app.event.RefreshLocalVideoListEvent;
 import com.xm.vbrowser.app.util.FileUtil;
 import com.xm.vbrowser.app.util.IntentUtil;
 import com.xm.vbrowser.app.util.RandomUtil;
 import com.xm.vbrowser.app.util.VideoFormatUtil;
-import com.xm.vbrowser.app.util.ViewUtil;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class FileListActivity extends Activity {
     private ListView listView;
@@ -62,17 +68,26 @@ public class FileListActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 ViewHolder viewHolder = (ViewHolder) view.getTag();
-                LocalVideoInfo localVideoInfo =viewHolder.localVideoInfo;
-                if("m3u8".equals(localVideoInfo.getVideoType())){
-                    int port = RandomUtil.getRandom(10625, 21011);
-                    MainApplication.webServerManager.startServer(port, localVideoInfo.getLocalPath());
-
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    IntentUtil.openFileByUri(FileListActivity.this, "http://127.0.0.1:"+String.valueOf(port)+"/index.m3u8");
-                    return;
+                LocalVideoInfo localVideoInfo = viewHolder.localVideoInfo;
+                String localPath = null;
+                String fileName = null;
+                if ("m3u8".equals(localVideoInfo.getVideoType())) {
+                    localPath = localVideoInfo.getLocalPath();
+                    fileName = "index.m3u8";
+                } else {
+                    String fullPath = localVideoInfo.getLocalPath();
+                    if (!TextUtils.isEmpty(fullPath)){
+                        int splitIndex = fullPath.lastIndexOf(File.separator);
+                        if (splitIndex>-1){
+                            localPath = fullPath.substring(0,splitIndex);
+                            fileName = fullPath.substring(splitIndex);
+                        }
+                    }
                 }
+                int port = RandomUtil.getRandom(10625, 21011);
+                MainApplication.webServerManager.startServer(port, localPath);
 
-                IntentUtil.openFileByUri(FileListActivity.this, "file://"+localVideoInfo.getLocalPath());
+                IntentUtil.openFileByUri(FileListActivity.this, "http://127.0.0.1:" + String.valueOf(port) + File.separator +fileName);
             }
         });
     }
