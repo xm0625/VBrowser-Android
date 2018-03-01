@@ -44,10 +44,6 @@ License
 ---
   GPLv2.
 
-请我...喝杯咖啡?
----
-![donationImg](https://raw.githubusercontent.com/xm0625/tool.github.io/master/Donation.png)
-
   [1]: https://crosswalk-project.org/
   [2]: https://github.com/xm0625/VBrowser-Android/releases
   [3]: https://www.v2ex.com/t/412760
