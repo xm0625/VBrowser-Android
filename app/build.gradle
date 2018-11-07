@@ -1,9 +1,10 @@
 buildscript {
     repositories {
         jcenter()
+        google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.2.0'
         classpath 'com.android.tools.build:transform-api:1.5.+'
         classpath 'org.javassist:javassist:3.21.+'
         classpath 'commons-io:commons-io:2.4'
@@ -24,24 +25,28 @@ repositories {
 android {
     compileSdkVersion Integer.parseInt(project.ANDROID_BUILD_SDK_VERSION)
     buildToolsVersion project.ANDROID_BUILD_TOOLS_VERSION
-
+    flavorDimensions "default"
     productFlavors {
         armv7 {
+            dimension "default"
             ndk {
                 abiFilter "armeabi-v7a"
             }
         }
         arm64 {
+            dimension "default"
             ndk {
                 abiFilter "arm64-v8a"
             }
         }
         x86 {
+            dimension "default"
             ndk {
                 abiFilter "x86"
             }
         }
         x86_64 {
+            dimension "default"
             ndk {
                 abiFilter "x86_64"
             }
@@ -76,14 +81,14 @@ android {
 }
 
 dependencies {
-    compile project.ANDROID_APPCOMPAT
-    compile 'org.greenrobot:eventbus:3.0.0'
-    compile 'q.rorbin:badgeview:1.1.2'
-    compile 'com.alibaba:fastjson:1.1.62.android'
-    compile 'com.daimajia.easing:library:2.0@aar'
-    compile 'com.daimajia.androidanimations:library:2.3@aar'
-    compile 'org.xwalk:xwalk_core_library:23.53.589.4'
-    compile 'pub.devrel:easypermissions:1.1.1'
+    implementation  project.ANDROID_APPCOMPAT
+    implementation  'org.greenrobot:eventbus:3.0.0'
+    implementation  'q.rorbin:badgeview:1.1.2'
+    implementation  'com.alibaba:fastjson:1.1.62.android'
+    implementation  'com.daimajia.easing:library:2.0@aar'
+    implementation  'com.daimajia.androidanimations:library:2.3@aar'
+    implementation  'org.xwalk:xwalk_core_library:23.53.589.4'
+    implementation  'pub.devrel:easypermissions:1.1.1'
 }
 
 import com.android.build.api.transform.Context
