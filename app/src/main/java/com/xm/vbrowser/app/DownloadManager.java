@@ -35,6 +35,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by xm on 17/8/19.
@@ -432,13 +434,42 @@ public class DownloadManager {
             boolean subFile = false;
             for(String lineStr:m3U8Content.split("\n")){
                 if(lineStr.startsWith("#")){
-                    newM3u8FileContent = newM3u8FileContent+lineStr+"\n";
+                    if(lineStr.startsWith("#EXT-X-KEY:")){
+                        Matcher searchKeyUri = Pattern.compile("URI=\"(.*?)\"").matcher(lineStr);
+                        if(!searchKeyUri.find()){
+                            throw new IOException("EXT-X-KEY解析失败");
+                        }
+                        String keyUri = searchKeyUri.group(1);
+                        String keyUrl;
+                        if(keyUri.startsWith("http://") || keyUri.startsWith("https://")){
+                            keyUrl = keyUri;
+                        }else{
+                            keyUrl = new URL(new URL(m3u8Url), keyUri.trim()).toString();
+                        }
+                        String uuidStr = UUIDUtil.genUUID();
+                        String keyPath = outputPath + File.separator + uuidStr + ".key";
+                        HashMap<String, String> hashMap = new HashMap<String, String>();
+                        hashMap.put("url", keyUrl);
+                        hashMap.put("downloadPath", keyPath);
+                        downloadQueue.add(hashMap);
+                        String newLineStr = Pattern.compile("URI=\"(.*?)\"").matcher(lineStr).replaceAll("URI=\"/" + uuidStr + ".key\"");
+                        newM3u8FileContent = newM3u8FileContent+newLineStr+"\n";
+                        continue;
+                    }
                     if(lineStr.startsWith("#EXT-X-STREAM-INF")){
                         subFile = true;
+                        newM3u8FileContent = newM3u8FileContent+lineStr+"\n";
+                        continue;
                     }
                 }else{
                     String uuidStr = UUIDUtil.genUUID();
-                    String fileUrl = new URL(new URL(m3u8Url), lineStr.trim()).toString();
+                    String videoUri = lineStr.trim();
+                    String fileUrl;
+                    if(videoUri.startsWith("http://") || videoUri.startsWith("https://")){
+                        fileUrl = videoUri;
+                    }else{
+                        fileUrl = new URL(new URL(m3u8Url), videoUri).toString();
+                    }
                     if(subFile){
                         subFile = false;
                         parseM3u8(fileUrl, uuidStr+".m3u8", outputPath,sizeDetectQueue, downloadQueue);
