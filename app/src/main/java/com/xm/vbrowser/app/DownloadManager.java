@@ -453,14 +453,12 @@ public class DownloadManager {
                         hashMap.put("downloadPath", keyPath);
                         downloadQueue.add(hashMap);
                         String newLineStr = Pattern.compile("URI=\"(.*?)\"").matcher(lineStr).replaceAll("URI=\"/" + uuidStr + ".key\"");
-                        newM3u8FileContent = newM3u8FileContent+newLineStr+"\n";
-                        continue;
+                        lineStr = newLineStr;
                     }
                     if(lineStr.startsWith("#EXT-X-STREAM-INF")){
                         subFile = true;
-                        newM3u8FileContent = newM3u8FileContent+lineStr+"\n";
-                        continue;
                     }
+                    newM3u8FileContent = newM3u8FileContent + lineStr + "\n";
                 }else{
                     String uuidStr = UUIDUtil.genUUID();
                     String videoUri = lineStr.trim();
