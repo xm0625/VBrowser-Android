@@ -18,6 +18,11 @@
   3.强力的视频嗅探功能;   
   4.多线程下载(M3U8 & NormalVideoFile)  
 
+TODO
+---
+* Cookies与下载器共享
+* PC UA Faker
+
 设备需求
 ---
   架构: arm、x86  

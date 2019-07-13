@@ -42,6 +42,7 @@ public class MainApplication  extends Application {
         appConfig = new AppConfig();
         downloadManager = new DownloadManager();
         webServerManager = new WebServerManager();
+        webServerManager.startServer(appConfig.webServerPort, appConfig.rootDataPath);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

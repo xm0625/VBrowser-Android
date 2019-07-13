@@ -3,7 +3,6 @@ package com.xm.vbrowser.app.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
@@ -11,15 +10,13 @@ import android.widget.*;
 import com.alibaba.fastjson.JSON;
 import com.xm.vbrowser.app.MainApplication;
 import com.xm.vbrowser.app.R;
-import com.xm.vbrowser.app.entity.DownloadTask;
 import com.xm.vbrowser.app.entity.LocalVideoInfo;
-import com.xm.vbrowser.app.event.RefreshDownloadingListEvent;
 import com.xm.vbrowser.app.event.RefreshLocalVideoListEvent;
 import com.xm.vbrowser.app.util.FileUtil;
 import com.xm.vbrowser.app.util.IntentUtil;
 import com.xm.vbrowser.app.util.RandomUtil;
 import com.xm.vbrowser.app.util.VideoFormatUtil;
-import com.xm.vbrowser.app.util.ViewUtil;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -64,15 +61,11 @@ public class FileListActivity extends Activity {
                 ViewHolder viewHolder = (ViewHolder) view.getTag();
                 LocalVideoInfo localVideoInfo =viewHolder.localVideoInfo;
                 if("m3u8".equals(localVideoInfo.getVideoType())){
-                    int port = RandomUtil.getRandom(10625, 21011);
-                    MainApplication.webServerManager.startServer(port, localVideoInfo.getLocalPath());
-
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    IntentUtil.openFileByUri(FileListActivity.this, "http://127.0.0.1:"+String.valueOf(port)+"/index.m3u8");
+                    IntentUtil.openFileByUri(FileListActivity.this, "http://127.0.0.1:"+String.valueOf(MainApplication.appConfig.webServerPort)+"/"+localVideoInfo.getRelativePath()+"/index.m3u8");
                     return;
                 }
 
-                IntentUtil.openFileByUri(FileListActivity.this, "file://"+localVideoInfo.getLocalPath());
+                IntentUtil.openFileByUri(FileListActivity.this, "file://"+localVideoInfo.getLocalPath()+File.separator+"video."+localVideoInfo.getVideoType());
             }
         });
     }
@@ -87,26 +80,15 @@ public class FileListActivity extends Activity {
                         Thread.sleep(1000);
 
                         List<LocalVideoInfo>  localVideoList = new ArrayList<LocalVideoInfo>();
-                        String[] strings = new File(MainApplication.appConfig.rootPath).list();
+                        String[] strings = new File(MainApplication.appConfig.rootDataPath).list();
                         if(strings!=null) {
                             for (String itemName : strings) {
                                 if (itemName.endsWith(".temp")) {
                                     continue;
                                 }
 
-                                String currentItemPath = MainApplication.appConfig.rootPath + File.separator + itemName;
+                                String currentItemPath = MainApplication.appConfig.rootDataPath + File.separator + itemName;
                                 File currentItem = new File(currentItemPath);
-                                if (currentItem.isFile()) {
-                                    String extension = FileUtil.getExtension(itemName);
-                                    if (VideoFormatUtil.containsVideoExtension(extension)) {
-                                        LocalVideoInfo localVideoInfo = new LocalVideoInfo();
-                                        localVideoInfo.setFileName(FileUtil.getName(itemName));
-                                        localVideoInfo.setVideoType(extension);
-                                        localVideoInfo.setSize(currentItem.length());
-                                        localVideoInfo.setLocalPath(currentItemPath);
-                                        localVideoList.add(localVideoInfo);
-                                    }
-                                }
                                 if (currentItem.isDirectory()) {
                                     List<String> fileNameList = Arrays.asList(new File(currentItemPath).list());
                                     if (fileNameList.contains("index.m3u8") && fileNameList.contains("videoTitle")) {
@@ -116,6 +98,17 @@ public class FileListActivity extends Activity {
                                         localVideoInfo.setVideoType("m3u8");
                                         localVideoInfo.setSize(size);
                                         localVideoInfo.setLocalPath(currentItemPath);
+                                        localVideoInfo.setRelativePath(itemName);
+                                        localVideoList.add(localVideoInfo);
+                                    }
+                                    if (fileNameList.contains("normalVideoType") && fileNameList.contains("videoTitle")) {
+                                        String videoType = FileUtil.fileToString(currentItemPath + File.separator + "normalVideoType");
+                                        LocalVideoInfo localVideoInfo = new LocalVideoInfo();
+                                        localVideoInfo.setFileName(FileUtil.fileToString(currentItemPath + File.separator + "videoTitle"));
+                                        localVideoInfo.setVideoType(videoType);
+                                        localVideoInfo.setSize((new File(currentItemPath+File.separator+"video."+videoType)).length());
+                                        localVideoInfo.setLocalPath(currentItemPath);
+                                        localVideoInfo.setRelativePath(itemName);
                                         localVideoList.add(localVideoInfo);
                                     }
                                 }
@@ -231,10 +224,6 @@ public class FileListActivity extends Activity {
                     File localVideoItem = new File(localVideoInfo.getLocalPath());
                     if(localVideoItem.isDirectory()){
                         FileUtil.deleteDirs(localVideoInfo.getLocalPath());
-                    }
-                    if(localVideoItem.isFile()){
-                        boolean delete = localVideoItem.delete();
-                        Log.d("FileListActivity", "delete:"+ delete);
                     }
                 }
             });

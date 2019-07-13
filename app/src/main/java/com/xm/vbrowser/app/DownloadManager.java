@@ -15,7 +15,6 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -192,13 +191,11 @@ public class DownloadManager {
             super.run();
 
             downloadTask.setStatus("loading");
-            String downloadTempDir = MainApplication.appConfig.rootPath+File.separator+downloadTask.getFileName()+".temp";
+            String downloadTempDir = MainApplication.appConfig.rootDataPath +File.separator+downloadTask.getFileName()+".temp";
             File downloadTempDirFile = new File(downloadTempDir);
 
-            String videoTitleFilePath = downloadTempDir+File.separator+"videoTitle";
 
-            String downloadDir =MainApplication.appConfig.rootPath+File.separator+downloadTask.getFileName();
-            File downloadDirFile = new File(downloadTempDir);
+            String downloadDir =MainApplication.appConfig.rootDataPath +File.separator+downloadTask.getFileName();
 
             if (downloadTempDirFile.exists()) {
                 if (downloadTempDirFile.isDirectory()) {
@@ -219,6 +216,7 @@ public class DownloadManager {
                 return;
             }
 
+            String videoTitleFilePath = downloadTempDir+File.separator+"videoTitle";
             String videoName = TextUtils.isEmpty(downloadTask.getSourcePageTitle())?downloadTask.getFileName():downloadTask.getSourcePageTitle();
             try {
                 FileUtil.stringToFile(videoName, videoTitleFilePath);
@@ -231,7 +229,7 @@ public class DownloadManager {
             }
 
             try {
-                parseM3u8(downloadTask.getUrl(),"index.m3u8", downloadTempDir, sizeDetectQueue, downloadQueue);
+                parseM3u8(downloadTask.getUrl(),"index.m3u8", downloadTask.getFileName() ,downloadTempDir, sizeDetectQueue, downloadQueue);
             } catch (IOException e) {
                 e.printStackTrace();
                 downloadTask.setStatus("error");
@@ -428,7 +426,7 @@ public class DownloadManager {
         }
 
 
-        private void parseM3u8(String m3u8Url, String newM3u8FileName, String outputPath, LinkedBlockingQueue<Map<String, String>> sizeDetectQueue, LinkedBlockingQueue<Map<String, String>> downloadQueue) throws IOException {
+        private void parseM3u8(String m3u8Url, String newM3u8FileName, String relativePath,String outputPath, LinkedBlockingQueue<Map<String, String>> sizeDetectQueue, LinkedBlockingQueue<Map<String, String>> downloadQueue) throws IOException {
             String m3U8Content = HttpRequestUtil.getResponseString(HttpRequestUtil.sendGetRequest(m3u8Url));
             String newM3u8FileContent = "";
             boolean subFile = false;
@@ -452,7 +450,7 @@ public class DownloadManager {
                         hashMap.put("url", keyUrl);
                         hashMap.put("downloadPath", keyPath);
                         downloadQueue.add(hashMap);
-                        String newLineStr = Pattern.compile("URI=\"(.*?)\"").matcher(lineStr).replaceAll("URI=\"/" + uuidStr + ".key\"");
+                        String newLineStr = Pattern.compile("URI=\"(.*?)\"").matcher(lineStr).replaceAll("URI=\""+ "/" + relativePath + "/" + uuidStr + ".key\"");
                         lineStr = newLineStr;
                     }
                     if(lineStr.startsWith("#EXT-X-STREAM-INF")){
@@ -470,8 +468,8 @@ public class DownloadManager {
                     }
                     if(subFile){
                         subFile = false;
-                        parseM3u8(fileUrl, uuidStr+".m3u8", outputPath,sizeDetectQueue, downloadQueue);
-                        newM3u8FileContent = newM3u8FileContent+"/"+uuidStr + ".m3u8\n";
+                        parseM3u8(fileUrl, uuidStr+".m3u8", relativePath, outputPath,sizeDetectQueue, downloadQueue);
+                        newM3u8FileContent = newM3u8FileContent + "/" + relativePath + "/" + uuidStr + ".m3u8\n";
                     }else{
                         String videoFilePath = outputPath + File.separator + uuidStr + ".ts";
                         HashMap<String, String> hashMap = new HashMap<String, String>();
@@ -479,7 +477,7 @@ public class DownloadManager {
                         hashMap.put("downloadPath", videoFilePath);
                         sizeDetectQueue.add(hashMap);
                         downloadQueue.add(hashMap);
-                        newM3u8FileContent = newM3u8FileContent+"/"+ uuidStr + ".ts\n";
+                        newM3u8FileContent = newM3u8FileContent + "/" + relativePath + "/" + uuidStr + ".ts\n";
                     }
                 }
             }
@@ -527,14 +525,16 @@ public class DownloadManager {
 
             downloadTask.setStatus("loading");
 
-            String downloadFilePath = MainApplication.appConfig.rootPath+File.separator+downloadTask.getFileName()+"."+downloadTask.getFileExtension();
-            File downloadFile = new File(downloadFilePath);
+            String downloadFilePath = MainApplication.appConfig.rootDataPath +File.separator+downloadTask.getFileName()+"."+downloadTask.getFileExtension();
 
             String downloadTempDir = downloadFilePath+".temp";
             File downloadTempDirFile = new File(downloadTempDir);
 
             String downloadTempFilePath = downloadFilePath +".download";
             File downloadTempFile = new File(downloadTempFilePath);
+
+            String finalDir = MainApplication.appConfig.rootDataPath +File.separator+downloadTask.getFileName();
+            File finalDirFile = new File(finalDir);
 
 
             if (downloadTempDirFile.exists()) {
@@ -555,6 +555,21 @@ public class DownloadManager {
 //                taskFailed(downloadTask.getTaskId());
 //                return;
 //            }
+
+
+            if (finalDirFile.exists()) {
+                if (finalDirFile.isDirectory()) {
+                    //目录已存在 删除
+                    FileUtil.deleteDirs(finalDir);
+                } else {
+                    downloadTask.setStatus("error");
+                    downloadTask.setFailedReason("目录创建失败, 存在同名文件finalDir");
+                    taskFailed(downloadTask.getTaskId());
+                    return;
+                }
+            }
+            finalDirFile.mkdirs();
+
 
             if(downloadTempFile.exists()) {
                 if (downloadTempFile.isDirectory()) {
@@ -780,12 +795,32 @@ public class DownloadManager {
                 }
                 FileUtil.deleteDirs(downloadTempDir);
             }
-            String realFileName = downloadTask.getFileName();
-            String fileNameFromTitle = FileUtil.fileNameFilter(downloadTask.getSourcePageTitle());
-            if(!TextUtils.isEmpty(fileNameFromTitle)){
-                realFileName = fileNameFromTitle+"_"+ RandomUtil.getRandom(1000,9999);
+
+            downloadTempFile.renameTo(new File(finalDir+File.separator+"video."+downloadTask.getFileExtension()));
+
+            String videoTitleFilePath = finalDir+File.separator+"videoTitle";
+            String videoName = TextUtils.isEmpty(downloadTask.getSourcePageTitle())?downloadTask.getFileName():downloadTask.getSourcePageTitle();
+            try {
+                FileUtil.stringToFile(videoName, videoTitleFilePath);
+            } catch (IOException e) {
+                e.printStackTrace();
+                downloadTask.setStatus("error");
+                downloadTask.setFailedReason("视频名称保存失败");
+                taskFailed(downloadTask.getTaskId());
+                return;
             }
-            FileUtil.renameFile(MainApplication.appConfig.rootPath, downloadTask.getFileName()+"."+downloadTask.getFileExtension() +".download",realFileName+"."+downloadTask.getFileExtension());
+            String normalVideoTypeFilePath = finalDir+File.separator+"normalVideoType";
+            try {
+                FileUtil.stringToFile(downloadTask.getFileExtension(), normalVideoTypeFilePath);
+            } catch (IOException e) {
+                e.printStackTrace();
+                downloadTask.setStatus("error");
+                downloadTask.setFailedReason("视频类型信息保存失败");
+                taskFailed(downloadTask.getTaskId());
+                return;
+            }
+
+
             taskFinished(downloadTask.getTaskId());
         }
 

@@ -8,6 +8,7 @@ public class LocalVideoInfo {
     private String videoType;
     private long size;
     private String localPath;
+    private String relativePath;
     private String playUrl;
 
     public LocalVideoInfo() {
@@ -51,5 +52,13 @@ public class LocalVideoInfo {
 
     public void setLocalPath(String localPath) {
         this.localPath = localPath;
+    }
+
+    public String getRelativePath() {
+        return relativePath;
+    }
+
+    public void setRelativePath(String relativePath) {
+        this.relativePath = relativePath;
     }
 }

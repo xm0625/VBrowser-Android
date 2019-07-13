@@ -15,7 +15,6 @@ public class WebServerManager {
     private ReentrantLock reentrantLock = new ReentrantLock();
 
     WebServerManager(){
-
     }
 
     public void startServer(int port, String rootPath){
