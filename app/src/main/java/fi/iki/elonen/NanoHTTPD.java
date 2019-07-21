@@ -1965,6 +1965,9 @@ public abstract class NanoHTTPD {
         String mime = null;
         if (dot >= 0) {
             mime = mimeTypes().get(uri.substring(dot + 1).toLowerCase());
+            if(mime == null && "m3u8".equals(uri.substring(dot + 1).toLowerCase())){
+                mime = "application/vnd.apple.mpegurl";
+            }
         }
         return mime == null ? "application/octet-stream" : mime;
     }
